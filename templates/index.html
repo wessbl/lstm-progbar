@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Training Progress</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <h1>Model Training Progress</h1>
+    <div id="progress-container" style="width: 100%; background-color: #f3f3f3;">
+        <div id="progress-bar" style="width: 0%; height: 30px; background-color: #4caf50;"></div>
+    </div>
+    <button onclick="startTraining()">Start Training</button>
+    
+    <script>
+        function startTraining() {
+            $.get('/start_training?ticker=AAPL', function(data) {
+                console.log(data.message);
+                updateProgress();
+            });
+        }
+
+        function updateProgress() {
+            $.get('/progress', function(data) {
+                var progress = data.progress;
+                $('#progress-bar').css('width', progress + '%');
+                if (progress < 100) {
+                    setTimeout(updateProgress, 100);  // Poll every 1/10ths second
+                }
+            });
+        }
+    </script>
+</body>
+</html>
